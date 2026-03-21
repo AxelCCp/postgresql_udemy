@@ -1,0 +1,170 @@
+18 ----------------------------
+
+create table users(
+	name VARCHAR(10) UNIQUE
+); 
+
+19 ----------------------------
+
+insert into users(name) values('zzzz');
+
+20 ----------------------------
+
+update users set name = 'xxxx' where name = 'aaa';
+
+21 ----------------------------
+
+select * from users;
+
+select * from users limit 2;
+
+select * from users limit 2 offset 2;
+
+22 ----------------------------
+
+select * from users where name = 'xxxx';
+
+select * from users where name like 'x%';
+
+select * from users where name like '%_x%';
+
+23 ----------------------------
+
+delete from users where name = 'xxxxx'; 
+
+24 ----------------------------
+
+drop table users; (elimina tabla)
+
+truncate table users; (vacia la tabla)
+
+25 ----------------------------
+
+select * from users;
+select * from users where id=10;
+select * from users where name like 'Jim %'; (se le pone un espacio para q busque Jim  y no Jimmy tmbn).
+select * from users where name like '% Alexander';
+
+update  users set name = 'zzz zzz' where id = 4;
+select * from users where id=4;
+
+delete from users where id = 3500;
+
+select max(id) from users;
+
+---
+
+delete from users where id = (select max(id) from users);
+
+
+27 ----------------------------
+
+select id, name from users;
+select id, upper(name) from users;
+select id, upper(name), name from users;
+select id, upper(name) as upper_name, name from users;
+select id, upper(name) as upper_name, lower(name) as lower_name, name from users;
+select id, upper(name) as upper_name, lower(name) as lower_name, length(name) as lenth, (20*2) as CONST, name from users;
+
+select id, upper(name) as upper_name, lower(name) as lower_name, length(name) as lenth, (20*2) as CONST, concat(id, '-', name), name from users;
+
+select id, upper(name) as upper_name, lower(name) as lower_name, length(name) as lenth, (20*2) as CONST, concat(id, '-', name) as xx, name from users;
+
+28 ----------------------------
+
+select name, substring(name,0,4) from users;
+select name, substring(name,0,4), position(' ' in name) from users;
+select name, substring(name,0,4), position('All' in name) from users;
+select name, substring(name,0, position(' ' in name)) as firts_name from users;
+select name, substring(name, position(' ' in name) + 1) as last_name from users;
+select name, trim(substring(name, position(' ' in name))) as last_name from users;
+
+29 ----------------------------
+//se generaron dos columnas manualmente.
+
+update users set 
+firts_name = substring(name,0, position(' ' in name)),
+last_name = trim(substring(name, position(' ' in name)));
+
+33 ----------------------------	
+
+se carga nueva bd users.
+
+
+34 ----------------------------
+
+select first_name, last_name, last_connection from users where last_connection like '221.%';
+
+select first_name, last_name, last_connection from users where followers >= 4999;
+
+35 ----------------------------
+
+select first_name, last_name, followers from users where followers > 4600;
+
+select first_name, last_name, followers from users where followers > 4600 and followers <= 4700;
+
+select first_name, last_name, followers from users where followers > 4600 and followers <= 4700 order by followers asc;
+
+select first_name, last_name, followers from users where followers between 4600 and 4700;
+
+
+36 ----------------------------
+
+select count(*) as total_users from users;
+
+total personas con menos seguidores:
+
+select count(*) as total_users, min(followers) as min_followers from users;
+
+select count(*) as total_users, max(followers) as max_followers from users;
+
+promedio:
+
+select count(*) as total_users, 
+min(followers) as min_followers,
+max(followers) as max_followers,
+avg(followers) as avg_followers
+from users;
+
+select count(*) as total_users, 
+min(followers) as min_followers,
+max(followers) as max_followers,
+avg(followers) as avg_followers,
+sum(followers) / count(*) as avg_manual
+from users;
+
+select count(*) as total_users, 
+min(followers) as min_followers,
+max(followers) as max_followers,
+avg(followers) as avg_followers,
+round(avg(followers)) as avg_followers_round,
+sum(followers) / count(*) as avg_manual
+from users;
+
+37 ----------------------------
+
+select first_name, last_name, followers from users where followers = 4 or followers = 4990;
+
+select count(*) from users where followers = 4 or followers = 4999;
+
+select count(*) from users where followers = 4 or followers = 4999 group by followers;
+
+select count(*), followers from users where followers between 4500 and 4999 group by followers;
+
+select count(*), followers from users where followers between 4500 and 4999 group by followers order by followers desc;
+
+----------------------------
+
+----------------------------
+
+----------------------------
+
+----------------------------
+
+----------------------------
+
+----------------------------
+
+----------------------------
+
+----------------------------
