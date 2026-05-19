@@ -254,11 +254,663 @@ select country, first_name, last_name from users where country in ('Mexico', 'Ho
 select count(*) as total, country from users where country in ('Mexico', 'Honduras', 'Costa Rica') group by country;
 
 
+51 ---------------------------
+
+SELECT
+	*
+FROM
+	country;
+
+
+ALTER TABLE country
+	ADD PRIMARY KEY (code);
+
+SELECT
+	*
+FROM
+	country
+WHERE
+	code = 'NLD';
+
+DELETE FROM country
+WHERE code = 'NLD'
+	AND code2 = 'NA';
+
+
+52 ---------------------------
+
+
+SELECT
+	*
+FROM
+	country where code = 'CRI';
+
+ALTER TABLE country
+	ADD CHECK (surfacearea >= 0);
+
+
+select DISTINCT continent from country;
+
+
+Alter TABLE country add CHECK(
+	( continent = 'Asia'::text) or 
+	( continent = 'South America'::text) or 
+	( continent = 'North America'::text) or 
+	( continent = 'Oceania'::text) or 
+	( continent = 'Antarctica'::text) or 
+	( continent = 'Africa'::text) or 
+	( continent = 'Europe'::text)
+);
+
+
+
+53 ----------------------------
+
+SELECT
+	*
+FROM
+	country;
+
+ALTER TABLE country
+	ADD CHECK (surfacearea >= 0);
+
+54 ----------------------------
+
+
+SELECT
+	*
+FROM
+	country
+WHERE
+	code = 'HND';
+
+ALTER TABLE country
+	ADD CHECK (surfacearea >= 0);
+
+SELECT DISTINCT
+	continent
+FROM
+	country;
+
+ALTER TABLE country
+	ADD CHECK ((continent = 'Asia'::text)
+			or(continent = 'South America'::text)
+				or(continent = 'North America'::text)
+					or(continent = 'Oceania'::text)
+						or(continent = 'Antarctica'::text)
+							or(continent = 'Africa'::text)
+								or(continent = 'Europe'::text)
+									or(continent = 'Central America'::text));
+
+ALTER TABLE country DROP CONSTRAINT "country_continent_check7";
+
+
+
+-- This script only contains the table creation statements and does not fully represent the table in the database. It's still missing: indices, triggers. Do not use it as a backup.
+-- Table Definition
+CREATE TABLE "public"."country" (
+	"code" bpchar NOT NULL,
+	"name" text NOT NULL,
+	"continent" text NOT NULL CHECK ((continent = 'Asia'::text)
+		OR(continent = 'South America'::text)
+		OR(continent = 'North America'::text)
+		OR(continent = 'Oceania'::text)
+		OR(continent = 'Antarctica'::text)
+		OR(continent = 'Africa'::text)
+		OR(continent = 'Europe'::text)
+		OR(continent = 'Central America'::text)),
+	"region" text NOT NULL,
+	"surfacearea" float4 NOT NULL CHECK (surfacearea >= (0)::double precision),
+	"indepyear" int2,
+	"population" int4 NOT NULL,
+	"lifeexpectancy" float4,
+	"gnp" numeric,
+	"gnpold" numeric,
+	"localname" text NOT NULL,
+	"governmentform" text NOT NULL,
+	"headofstate" text,
+	"capital" int4,
+	"code2" bpchar NOT NULL,
+	PRIMARY KEY ("code")
+);
+
+
+56 ----------------------------
+
+SELECT
+	*
+FROM
+	city
+WHERE
+	name = 'Jinzhou'
+	AND countrycode = 'CHN'
+	AND district = 'Liaoning';
+
+CREATE UNIQUE INDEX "unique_name_countrycode_district" ON city (name, countrycode, district);
+
+CREATE INDEX "index_district" ON city (district);
+
+57 ----------------------------
+
+
+-- 1. Crear una llave primaria en city (id) 
+ALTER TABLE city
+	ADD PRIMARY KEY (id);
+
+-- 2. Crear un check en population, para que no soporte negativos 
+ALTER TABLE city
+	ADD CHECK (population >= 0);
+
+SELECT
+	*
+FROM
+	city;
+
+-- 3. Crear una llave primaria compuesta en "countrylanguage"
+-- los campos a usar como llave compuesta son countrycode y language
+ALTER TABLE countrylanguage
+	ADD PRIMARY KEY (countrycode, language);
+
+-- 4. Crear check en percentage, 
+-- Para que no permita negativos ni números superiores a 100
+
+ALTER TABLE countrylanguage
+	ADD CHECK (
+	(percentage >= 0) AND ( percentage <= 100 )
+);
+
+SELECT
+	*
+FROM
+	countrylanguage;
+
+
+
+58 ----------------------------
+
+
+SELECT
+	*
+FROM
+	city
+WHERE
+	name = 'Jinzhou'
+	AND countrycode = 'CHN'
+	AND district = 'Liaoning';
+
+CREATE UNIQUE INDEX "unique_name_countrycode_district" ON city (name, countrycode, district);
+
+CREATE INDEX "index_district" ON city (district);
+
+
+59 ----------------------------
+
+
+ALTER TABLE city
+	ADD CONSTRAINT fk_country_code FOREIGN KEY (countrycode) REFERENCES country (code);
+
+-- ON DELETE CASCADE
+SELECT
+	*
+FROM
+	country
+WHERE
+	code = 'AFG';
+
+SELECT
+	*
+FROM
+	city
+WHERE
+	countrycode = 'AFG';
+
+INSERT INTO country
+		values('AFG', 'Afghanistan', 'Asia', 'Southern Asia', 652860, 1919, 40000000, 62, 69000000, NULL, 'Afghanistan', 'Totalitarian', NULL, NULL, 'AF');
+
+
+60 ----------------------------
+
+ALTER TABLE countrylanguage
+	ADD CONSTRAINT fk_country_code FOREIGN KEY (countrycode) REFERENCES country (code);
+
+DELETE FROM country
+WHERE code = 'AFG';
+
+SELECT
+	*
+FROM
+	city
+WHERE
+	countrycode = 'AFG';
+
+61 ----------------------------
+
+DELETE FROM country
+WHERE code = 'AFG';
+
+SELECT
+	*
+FROM
+	country
+WHERE
+	code = 'AFG';
+
+SELECT
+	*
+FROM
+	city
+WHERE
+	countrycode = 'AFG';
+
+SELECT
+	*
+FROM
+	countrylanguage
+WHERE
+	countrycode = 'AFG';
+
+66 ----------------------------
+
+
+
+select DISTINCT continent from country order by continent asc; 
+
+
+INSERT INTO continent (name)
+	SELECT DISTINCT
+		continent
+	FROM
+		country
+	ORDER BY
+		continent ASC;
+
+select * from continent;
+
+
+67 ----------------------------
+
+
+-- Table Definition
+CREATE TABLE "public"."country_bk" (
+    "code" bpchar NOT NULL,
+    "name" text NOT NULL,
+    "continent" text NOT NULL CHECK ((continent = 'Asia'::text) OR (continent = 'South America'::text) OR (continent = 'North America'::text) OR (continent = 'Oceania'::text) OR (continent = 'Antarctica'::text) OR (continent = 'Africa'::text) OR (continent = 'Europe'::text) OR (continent = 'Central America'::text)),
+    "region" text NOT NULL,
+    "surfacearea" float4 NOT NULL CHECK (surfacearea >= (0)::double precision),
+    "indepyear" int2,
+    "population" int4 NOT NULL,
+    "lifeexpectancy" float4,
+    "gnp" numeric,
+    "gnpold" numeric,
+    "localname" text NOT NULL,
+    "governmentform" text NOT NULL,
+    "headofstate" text,
+    "capital" int4,
+    "code2" bpchar NOT NULL,
+    PRIMARY KEY ("code")
+);
+
+
+INSERT INTO country_bk
+SELECT
+	*
+FROM
+	country;
+
+
+SELECT * from country_bk;
+
+SELECT * from country;
+
+alter table country drop CONSTRAINT country_continent_check;
+
+
+68 ----------------------------
+
+
+-- Table Definition
+CREATE TABLE "public"."country_bk" (
+    "code" bpchar NOT NULL,
+    "name" text NOT NULL,
+    "continent" text NOT NULL CHECK ((continent = 'Asia'::text) OR (continent = 'South America'::text) OR (continent = 'North America'::text) OR (continent = 'Oceania'::text) OR (continent = 'Antarctica'::text) OR (continent = 'Africa'::text) OR (continent = 'Europe'::text) OR (continent = 'Central America'::text)),
+    "region" text NOT NULL,
+    "surfacearea" float4 NOT NULL CHECK (surfacearea >= (0)::double precision),
+    "indepyear" int2,
+    "population" int4 NOT NULL,
+    "lifeexpectancy" float4,
+    "gnp" numeric,
+    "gnpold" numeric,
+    "localname" text NOT NULL,
+    "governmentform" text NOT NULL,
+    "headofstate" text,
+    "capital" int4,
+    "code2" bpchar NOT NULL,
+    PRIMARY KEY ("code")
+);
+
+
+INSERT INTO country_bk
+SELECT
+	*
+FROM
+	country;
+
+
+SELECT * from country_bk;
+
+SELECT * from country;
+
+alter table country drop CONSTRAINT country_continent_check;
+
+
+select 
+	a.name, a.continent,
+	( select "code" from continent b where b.name = a.continent )
+from country a;
+
+
+update country a
+set continent = ( select "code" from continent b where b.name = a.continent );
+
+select * from country;
+
+
+70 ----------------------------
+
+
+
+-- Tarea con countryLanguage
+
+-- Crear la tabla de language
+
+-- Sequence and defined type
+CREATE SEQUENCE IF NOT EXISTS language_code_seq;
+
+
+-- Table Definition
+CREATE TABLE "public"."language" (
+    "code" int4 NOT NULL DEFAULT 	nextval('language_code_seq'::regclass),
+    "name" text NOT NULL,
+    PRIMARY KEY ("code")
+);
+
+-- Crear una columna en countrylanguage
+ALTER TABLE countrylanguage
+ADD COLUMN languagecode varchar(3);
+
+insert into "language" ( name )
+select distinct "language" from countrylanguage order by "language" asc;
+
+select * from "language";
+
+
+
+-- Empezar con el select para confirmar lo que vamos a actualizar
+select 
+"language",
+( select code from "language" b where a."language" = b.name )
+from countrylanguage a ;
+
+
+-- Actualizar todos los registros
+update countrylanguage a
+set languagecode = ( select code from "language" b where a."language" = b.name );
+
+
+-- Cambiar tipo de dato en countrylanguage - languagecode por int4
+alter table countrylanguage
+alter COLUMN languagecode Type int4
+USING languagecode::integer;
+
+
+-- Crear el forening key y constraints de no nulo el language_code
+
+-- Revisar lo creado
+select * from countrylanguage;
+
+
+
+76 ----------------------------
+
+
+
+
+select code, name,'123' from continent where name like '%America%'
+union
+select 1, 'otra cosa', name from continent where code in (3,5)
+ORDER BY
+	name ASC;
+
+
+77 ----------------------------
+
+SELECT
+	a.name AS country,
+	b.name AS continent
+FROM
+	country a,
+	continent b
+WHERE
+	a.continent = b.code
+ORDER BY
+	a.name ASC;
+
+78 ----------------------------
+
+
+
+SELECT
+	a.name AS country,
+	b.name AS continent
+FROM
+	country a,
+	continent b
+WHERE
+	a.continent = b.code
+ORDER BY
+	a.name ASC;
+
+
+SELECT
+	a.name AS country,
+	b.name AS continent
+FROM
+	country a
+	INNER JOIN continent b ON a.continent = b.code
+ORDER BY
+	a.name ASC;
+
+
+79 ----------------------------
+
+ALTER SEQUENCE continent_code_seq
+	RESTART WITH 8;
+	
+	
+80 ----------------------------
+
+-- country a    - name, continentCode (codigo numérico)
+-- continent b  - name as continentName
+
+SELECT
+	a.name AS country,
+	a.continent AS continentCode,
+	b.name AS continentName
+FROM
+	country a
+	FULL OUTER JOIN continent b ON a.continent = b.code
+ORDER BY
+	a.name DESC;
+	
+81----------------------------
+
+
+SELECT
+	a.name AS country,
+	a.continent AS continentCode,
+	b.name AS continentName
+FROM
+	country a
+	RIGHT JOIN continent b ON a.continent = b.code
+	WHERE a.continent IS NULL
+ORDER BY
+	a.name DESC;
+
+
+82----------------------------
+
+
+
+(
+  SELECT count(*) as count, b.name FROM country a
+    INNER JOIN continent b ON a.continent = b.code
+    GROUP by b.name
+)
+union
+(
+    SELECT 0 as count, b.name FROM country a
+      RIGHT JOIN continent b ON a.continent = b.code
+      WHERE a.continent IS NULL
+      GROUP by b.name
+)
+ORDER BY count;
+
+
+(
+	SELECT
+		count(*) AS count,
+		b.name
+	FROM
+		country a
+		INNER JOIN continent b ON a.continent = b.code
+	GROUP BY
+		b.name)
+UNION (
+	SELECT
+		0 AS count,
+		b.name
+	FROM
+		country a
+	RIGHT JOIN continent b ON a.continent = b.code
+WHERE
+	a.continent IS NULL
+GROUP BY
+	b.name)
+ORDER BY
+	count;
+
+-- order by count(*) asc;
+
+84----------------------------
+
+-- Quiero que me muestren el país con más ciudades
+-- Campos: total de ciudades y el nombre del país
+-- usar INNER JOIN
+
+SELECT
+	count(*) AS total,
+	b.name AS country
+FROM
+	city a
+	INNER JOIN country b ON a.countrycode = b.code
+GROUP BY
+	b.name
+ORDER BY
+	count(*)
+	DESC
+LIMIT 1;
+
+
+	
+85----------------------------
+
+
+
+-- ¿Quiero saber los idiomas oficiales que se hablan por continente?
+
+select * from countrylanguage where isofficial = true;
+
+select * from country;
+
+select * from continent;
+
+
+
+select distinct a."language", c."name" as continent from countrylanguage a 
+inner JOIN country b ON a.countrycode = b.code
+inner join continent c on b.continent = c.code
+where a.isofficial = true;
+
+
+select * from countrylanguage;
+
+-- ¿Cuantos idiomas oficiales se hablan por continente?
+select count(*), continent from (
+	select distinct a."language", c."name" as continent from countrylanguage a 
+	inner JOIN country b ON a.countrycode = b.code
+	inner join continent c on b.continent = c.code
+	where a.isofficial = true
+) as totales
+group by continent;
+
+
+87----------------------------
+
+
+
+
+-- ¿Cuál es el idioma (y código del idioma) oficial más hablado por diferentes países en Europa? 
+
+select * from countrylanguage where isofficial = true;
+
+select * from country;
+
+select * from continent;
+
+Select * from "language";
+
+
+select count(*), b.languagecode, b."language" from country a
+INNER JOIN countrylanguage b on a.code = b.countrycode
+where a.continent = 5 and b.isofficial = true
+group by b.languagecode, b."language"
+order by count(*) desc
+limit 1;
+
+
+
+
+-- Listado de todos los países cuyo idioma oficial es el más hablado de Europa 
+-- (no hacer subquery, tomar el código anterior)
+select * from country a
+INNER join countrylanguage b on a.code = b.countrycode
+where a.continent = 5 and b.isofficial = true and b.languagecode = 135;
+
+
+
+select languagecode from (
+select count(*), b.languagecode, b."language" from country a
+INNER JOIN countrylanguage b on a.code = b.countrycode
+where a.continent = 5 and b.isofficial = true
+group by b.languagecode, b."language"
+order by count(*) desc
+limit 1
+) as subquery
+
+
+
+
+
+
+
 
 ----------------------------
-
 ----------------------------
-
 ----------------------------
-
+----------------------------
+----------------------------
+----------------------------
+----------------------------
+----------------------------
+----------------------------
 ----------------------------
